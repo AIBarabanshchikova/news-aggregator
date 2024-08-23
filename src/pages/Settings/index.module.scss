@@ -1,0 +1,28 @@
+.settings {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 8px;
+  padding: 16px 20px;
+
+  > * {
+    width: 100%;
+
+    @media (min-width: 769px) {
+      width: unset;
+    }
+  }
+
+  @media (min-width: 481px) and (max-width: 769px) {
+    padding: 20px 40px;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    gap: 16px;
+    padding: 24px 60px;
+  }
+
+  @media (min-width: 1025px) {
+    gap: 16px;
+    padding: 28px 80px;
+  }
+}

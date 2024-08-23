@@ -3,6 +3,7 @@ import { Paths } from "./pages/paths";
 import { NewsAggregator } from "./pages/NewsAggregator";
 import { Settings } from "./pages/Settings";
 import { AppContextProvider } from "./appContext";
+import { Navigation } from "./pages/Navigation";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
 export function App() {
   return (
     <AppContextProvider>
+      <Navigation />
       <RouterProvider router={router} />
     </AppContextProvider>
   );

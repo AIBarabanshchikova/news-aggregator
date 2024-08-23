@@ -7,7 +7,6 @@ import {
 } from "../../api/nyTimes";
 import { News } from "./types";
 import styles from "./index.module.scss";
-import { Navigation } from "../Navigation";
 import useDebouncedValue from "../../hooks/useDebouncedValue";
 import { useAppContext } from "../../appContextHooks";
 import { ALL_CATEGORIES, ALL_SOURCES, SOURCES } from "../Settings/constants";
@@ -43,35 +42,35 @@ export function NewsAggregator() {
   }, [news, selectedCategory, selectedDate, selectedSource]);
 
   const getNews = useCallback(async () => {
-    const isAllSources = value.settings.source === ALL_SOURCES;
-    const isAllCategories = value.settings.category === ALL_CATEGORIES;
-    const callNewsFromGuardian =
-      isAllSources || value.settings.source === SOURCES.theGuardian;
-    const callNewsFromNewsAPI =
-      isAllSources || value.settings.source === SOURCES.newsAPI;
-    const callNewsFromNYTimes =
-      isAllSources || value.settings.source === SOURCES.nyTimes;
-    const searchByKeywordsAndCategory =
-      !isAllCategories && !!debouncedSearchString;
+    const allSourcesSelected = value.settings.source === ALL_SOURCES;
+    const allCategoriesSelected = value.settings.category === ALL_CATEGORIES;
+    const newsFromGuardianSelected =
+      allSourcesSelected || value.settings.source === SOURCES.theGuardian;
+    const newsFromNewsAPISelected =
+      allSourcesSelected || value.settings.source === SOURCES.newsAPI;
+    const newsFromNYTimesSelected =
+      allSourcesSelected || value.settings.source === SOURCES.nyTimes;
 
     Promise.allSettled([
-      callNewsFromGuardian
+      newsFromGuardianSelected
         ? getNewsFromGuardian(
             debouncedSearchString ?? undefined,
-            !isAllCategories ? value.settings.category : undefined
+            !allCategoriesSelected ? value.settings.category : undefined
           )
         : [],
-      callNewsFromNewsAPI
+      newsFromNewsAPISelected
         ? getNewsFromNewsAPI(
             debouncedSearchString ?? undefined,
-            !isAllCategories ? value.settings.category : undefined
+            !allCategoriesSelected ? value.settings.category : undefined
           )
         : [],
-      !callNewsFromNYTimes || searchByKeywordsAndCategory
-        ? []
-        : !isAllCategories
+      // NYTimes API doesn't support search by category and keywords at the same time.
+      newsFromNYTimesSelected && !allCategoriesSelected && debouncedSearchString
         ? getNewsByCategoryFromNYTimes(value.settings.category)
-        : getNewsFromNYTimes(debouncedSearchString ?? undefined),
+        : [],
+      newsFromNYTimesSelected && allCategoriesSelected && debouncedSearchString
+        ? getNewsFromNYTimes(debouncedSearchString ?? undefined)
+        : [],
     ]).then((results) => {
       let allNews: News[] = [];
       let errorsCount = 0;
@@ -85,7 +84,7 @@ export function NewsAggregator() {
       });
 
       if (errorsCount === results.length) {
-        setErrorMessage("Too many requests. Please try again later.");
+        setErrorMessage("Unable to load any news. Please try again later.");
         return;
       }
 
@@ -126,91 +125,88 @@ export function NewsAggregator() {
   }, [getNews]);
 
   return (
-    <>
-      <Navigation />
-      <div className={styles.page}>
-        <div className={styles.search}>
-          <form className={styles.searchField} onSubmit={submit}>
-            <input
-              type="text"
-              value={searchString ?? ""}
-              onChange={(e) => setSearchString(e.target.value)}
-            />
-            <button type="submit">Search</button>
-          </form>
-          <div className={styles.filters}>
-            <select
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              disabled={!categories}
-            >
-              <option value={ALL_CATEGORIES}>All categories</option>
-              {categories?.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-            <select
-              onChange={(e) =>
-                setSelectedDate(e.target.value as keyof typeof DATE_INTERVALS)
-              }
-              disabled={!news}
-            >
-              {Object.entries(DATE_INTERVALS).map(([key, value]) => (
-                <option key={key} value={key}>
-                  {value.value}
-                </option>
-              ))}
-            </select>
-            <select
-              onChange={(e) => setSelectedSource(e.target.value)}
-              disabled={!news}
-            >
-              <option value={ALL_SOURCES}>All sources</option>
-              {sources?.map((source) => (
-                <option key={source} value={source}>
-                  {source}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className={styles.content}>
-          {errorMessage ? (
-            <div className={styles.error}>{errorMessage}</div>
-          ) : filteredNews ? (
-            filteredNews.length ? (
-              filteredNews?.map((article) => (
-                <div key={article.id} className={styles.news}>
-                  <a
-                    href={article.url}
-                    target="_blank"
-                    className={styles.newsTitle}
-                  >
-                    {article.title}
-                  </a>
-                  <div>
-                    <div
-                      className={styles.details}
-                    >{`Category: ${article.category}`}</div>
-                    <div className={styles.details}>{`Published at: ${new Date(
-                      article.publicationDate
-                    ).toLocaleDateString()}`}</div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className={styles.nothingFound}>
-                Oops... nothing found!
-                <br />
-                Try other keywords or categories
-              </div>
-            )
-          ) : (
-            <span className={styles.loader}></span>
-          )}
+    <div className={styles.page}>
+      <div className={styles.search}>
+        <form className={styles.searchField} onSubmit={submit}>
+          <input
+            type="text"
+            value={searchString ?? ""}
+            onChange={(e) => setSearchString(e.target.value)}
+          />
+          <button type="submit">Search</button>
+        </form>
+        <div className={styles.filters}>
+          <select
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            disabled={!categories}
+          >
+            <option value={ALL_CATEGORIES}>All categories</option>
+            {categories?.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <select
+            onChange={(e) =>
+              setSelectedDate(e.target.value as keyof typeof DATE_INTERVALS)
+            }
+            disabled={!news}
+          >
+            {Object.entries(DATE_INTERVALS).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value.value}
+              </option>
+            ))}
+          </select>
+          <select
+            onChange={(e) => setSelectedSource(e.target.value)}
+            disabled={!news}
+          >
+            <option value={ALL_SOURCES}>All sources</option>
+            {sources?.map((source) => (
+              <option key={source} value={source}>
+                {source}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
-    </>
+      <div className={styles.content}>
+        {errorMessage ? (
+          <div className={styles.error}>{errorMessage}</div>
+        ) : filteredNews ? (
+          filteredNews.length ? (
+            filteredNews?.map((article) => (
+              <div key={article.id} className={styles.news}>
+                <a
+                  href={article.url}
+                  target="_blank"
+                  className={styles.newsTitle}
+                >
+                  {article.title}
+                </a>
+                <div>
+                  <div
+                    className={styles.details}
+                  >{`Category: ${article.category}`}</div>
+                  <div className={styles.details}>{`Published at: ${new Date(
+                    article.publicationDate
+                  ).toLocaleDateString()}`}</div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className={styles.nothingFound}>
+              Oops... nothing found!
+              <br />
+              Try other keywords or categories
+            </div>
+          )
+        ) : (
+          <span className={styles.loader}></span>
+        )}
+      </div>
+    </div>
   );
 }

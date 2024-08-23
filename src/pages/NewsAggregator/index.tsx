@@ -1,17 +1,17 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { getNewsFromGuardian } from "../../api/guardian";
+import { getNewsFromNewsAPI } from "../../api/newsAPI";
 import {
-  getNewsFromNewsAPI,
-  getNewsFromGuardian,
-  getNewsFromNYTimes,
   getNewsByCategoryFromNYTimes,
-} from "../../api";
-import { News } from "../../api/types";
-import { ALL_CATEGORIES, ALL_SOURCES, INTERVALS } from "./types";
+  getNewsFromNYTimes,
+} from "../../api/nyTimes";
+import { News } from "./types";
 import styles from "./index.module.scss";
 import { Navigation } from "../Navigation";
 import useDebouncedValue from "../../hooks/useDebouncedValue";
 import { useAppContext } from "../../appContextHooks";
-import { SOURCES } from "../Settings/types";
+import { ALL_CATEGORIES, ALL_SOURCES, SOURCES } from "../Settings/constants";
+import { DATE_INTERVALS } from "./dateIntervals";
 
 export function NewsAggregator() {
   const { value } = useAppContext();
@@ -23,17 +23,20 @@ export function NewsAggregator() {
     useState<string>(ALL_CATEGORIES);
   const [selectedSource, setSelectedSource] = useState<string>(ALL_SOURCES);
   const [selectedDate, setSelectedDate] =
-    useState<keyof typeof INTERVALS>("any_time");
+    useState<keyof typeof DATE_INTERVALS>("any_time");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const debouncedSearchString = useDebouncedValue(searchString);
 
   const filteredNews = useMemo(() => {
-    return news?.filter((i) => {
+    return news?.filter((article) => {
       const filteredByCategory =
-        selectedCategory === ALL_CATEGORIES || i.category === selectedCategory;
+        selectedCategory === ALL_CATEGORIES ||
+        article.category === selectedCategory;
       const filteredBySource =
-        selectedSource === ALL_SOURCES || i.source === selectedSource;
-      const filteredByDate = INTERVALS[selectedDate].helper(i.publicationDate);
+        selectedSource === ALL_SOURCES || article.source === selectedSource;
+      const filteredByDate = DATE_INTERVALS[selectedDate].helper(
+        article.publicationDate
+      );
 
       return filteredByCategory && filteredBySource && filteredByDate;
     });
@@ -87,15 +90,15 @@ export function NewsAggregator() {
       }
 
       const sortedNews = allNews
-        .filter((i) => !!i.title)
+        .filter((article) => !!article.title)
         .sort(
           (a, b) =>
             new Date(b.publicationDate).getTime() -
             new Date(a.publicationDate).getTime()
         );
-      const allSourcesSet = new Set(allNews.map((i) => i.source));
+      const allSourcesSet = new Set(allNews.map((article) => article.source));
       const allCategoriesSet = new Set(
-        allNews.map((i) => i.category).filter(Boolean)
+        allNews.map((article) => article.category).filter(Boolean)
       );
 
       setNews(sortedNews);
@@ -149,11 +152,11 @@ export function NewsAggregator() {
             </select>
             <select
               onChange={(e) =>
-                setSelectedDate(e.target.value as keyof typeof INTERVALS)
+                setSelectedDate(e.target.value as keyof typeof DATE_INTERVALS)
               }
               disabled={!news}
             >
-              {Object.entries(INTERVALS).map(([key, value]) => (
+              {Object.entries(DATE_INTERVALS).map(([key, value]) => (
                 <option key={key} value={key}>
                   {value.value}
                 </option>
@@ -177,17 +180,21 @@ export function NewsAggregator() {
             <div className={styles.error}>{errorMessage}</div>
           ) : filteredNews ? (
             filteredNews.length ? (
-              filteredNews?.map((i) => (
-                <div key={i.id} className={styles.news}>
-                  <a href={i.url} target="_blank" className={styles.newsTitle}>
-                    {i.title}
+              filteredNews?.map((article) => (
+                <div key={article.id} className={styles.news}>
+                  <a
+                    href={article.url}
+                    target="_blank"
+                    className={styles.newsTitle}
+                  >
+                    {article.title}
                   </a>
                   <div>
                     <div
                       className={styles.details}
-                    >{`Category: ${i.category}`}</div>
+                    >{`Category: ${article.category}`}</div>
                     <div className={styles.details}>{`Published at: ${new Date(
-                      i.publicationDate
+                      article.publicationDate
                     ).toLocaleDateString()}`}</div>
                   </div>
                 </div>

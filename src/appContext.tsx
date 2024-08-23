@@ -1,7 +1,11 @@
 import { ReactNode, createContext, useEffect, useMemo, useState } from "react";
-import { ALL_CATEGORIES, ALL_SOURCES } from "./pages/NewsAggregator/types";
-import { getCategoriesFromGuardian, getCategoriesFromNYTimes } from "./api";
-import { NEWS_API_CATEGORIES } from "./pages/Settings/types";
+import {
+  ALL_CATEGORIES,
+  ALL_SOURCES,
+  NEWS_API_CATEGORIES,
+} from "./pages/Settings/constants";
+import { getCategoriesFromNYTimes } from "./api/nyTimes";
+import { getCategoriesFromGuardian } from "./api/guardian";
 
 type ContextValue = {
   categories: string[];

@@ -1,46 +1,3 @@
-export interface NewsAPINews {
-  author: string;
-  content: string;
-  description: string;
-  publishedAt: string;
-  source: { id: string | null; name: string };
-  title: string;
-  url: string;
-  urlToImage: string;
-}
-
-export interface NewsApiResponse {
-  articles: NewsAPINews[];
-  totalResults: number;
-  status: string;
-}
-
-export interface GuardianNews {
-  apiUrl: string;
-  id: string;
-  isHosted: boolean;
-  pillarId: string;
-  pillarName: string;
-  sectionId: string;
-  sectionName: string;
-  type: string;
-  webPublicationDate: string;
-  webTitle: string;
-  webUrl: string;
-}
-
-export interface GuardianNewsResponse {
-  currentPage: number;
-  orderBy: string;
-  pageSize: number;
-  pages: number;
-  results: GuardianNews[];
-  startIndex: number;
-  status: string;
-  total: number;
-  userTier: string;
-}
-
 export interface NYTimesNews {
   abstract: string;
   document_type: string;
@@ -72,36 +29,6 @@ export interface NYTimesNewsResponse {
     };
   };
   status: string;
-}
-
-export interface News {
-  id: string;
-  title: string;
-  url: string;
-  publicationDate: string;
-  source: string;
-  category: string;
-}
-
-export interface GuardianSection {
-  apiUrl: string;
-  editions: {
-    apiUrl: string;
-    code: string;
-    id: string;
-    webTitle: string;
-    webUrl: string;
-  }[];
-  id: string;
-  webTitle: string;
-  webUrl: string;
-}
-
-export interface GuardianSectionsResponse {
-  results: GuardianSection[];
-  status: string;
-  total: number;
-  userTier: string;
 }
 
 export interface NYTimesCategoriesResponse {

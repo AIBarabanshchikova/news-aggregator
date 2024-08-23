@@ -1,3 +1,6 @@
+export const ALL_CATEGORIES = "all_categories";
+export const ALL_SOURCES = "all_sources";
+
 export enum SOURCES {
   theGuardian = "The Guardian",
   nyTimes = "The New York Times",

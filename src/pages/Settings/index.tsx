@@ -1,8 +1,7 @@
 import { useAppContext } from "../../appContextHooks";
 import { Navigation } from "../Navigation";
-import { ALL_CATEGORIES, ALL_SOURCES } from "../NewsAggregator/types";
 import styles from "./index.module.scss";
-import { SOURCES } from "./types";
+import { ALL_CATEGORIES, ALL_SOURCES, SOURCES } from "./constants";
 
 export function Settings() {
   const { value, setSettings } = useAppContext();

@@ -1,4 +1,4 @@
-import { useAppContext } from "../../context-hooks";
+import { useAppContext } from "../../appContextHooks";
 import { Navigation } from "../Navigation";
 import { ALL_CATEGORIES, ALL_SOURCES } from "../NewsAggregator/types";
 import styles from "./index.module.scss";

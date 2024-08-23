@@ -10,7 +10,7 @@ import { ALL_CATEGORIES, ALL_SOURCES, INTERVALS } from "./types";
 import styles from "./index.module.scss";
 import { Navigation } from "../Navigation";
 import useDebouncedValue from "../../hooks/useDebouncedValue";
-import { useAppContext } from "../../context-hooks";
+import { useAppContext } from "../../appContextHooks";
 import { SOURCES } from "../Settings/types";
 
 export function NewsAggregator() {

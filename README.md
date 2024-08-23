@@ -21,7 +21,7 @@ You will need to get api keys to launch the application:
 1. Clone the repository
 
 ```
-git clone https://github.com/AIBarabanshchikova/news-aggregator
+git clone https://github.com/AIBarabanshchikova/news-aggregator.git
 cd news-aggregator
 ```
 

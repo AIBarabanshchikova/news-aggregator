@@ -12,9 +12,9 @@ The News Aggregator is a web application that collects news articles from multip
 
 To use this application, you will need API keys for the following news sources:
 
-- **The Guardian** [Register here](https://bonobo.capi.gutools.co.uk/register/developer)
-- **NewsAPI** [Register here](https://newsapi.org/register)
-- **The New York Times** [Register here](https://developer.nytimes.com/get-started)
+- **The Guardian**: [Register here](https://bonobo.capi.gutools.co.uk/register/developer)
+- **NewsAPI**: [Register here](https://newsapi.org/register)
+- **The New York Times**: [Register here](https://developer.nytimes.com/get-started)<br>
   Enable **"Times Wire API"** and **"Article Search API"** in your NY Times developer account.
 
 ## How to run using docker

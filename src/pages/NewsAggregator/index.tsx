@@ -66,10 +66,12 @@ export function NewsAggregator() {
           )
         : [],
       // NYTimes API doesn't support search by category and keywords at the same time.
-      newsFromNYTimesSelected && !allCategoriesSelected && debouncedSearchString
+      newsFromNYTimesSelected &&
+      !allCategoriesSelected &&
+      !debouncedSearchString
         ? getNewsByCategoryFromNYTimes(value.settings.category)
         : [],
-      newsFromNYTimesSelected && allCategoriesSelected && debouncedSearchString
+      newsFromNYTimesSelected && allCategoriesSelected
         ? getNewsFromNYTimes(debouncedSearchString ?? undefined)
         : [],
     ]).then((results) => {

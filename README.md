@@ -1,20 +1,21 @@
 # News aggregator application
 
-The News Aggregator is a web application that collects news articles from three sources (NewsAPI, The Guardian, The New York Times) and presents them. This app will help uoy to stay up-to-date with the latest news from all the world.
+The News Aggregator is a web application that collects news articles from multiple sources: NewsAPI, The Guardian and The New York Times. This app will help you to stay up-to-date with the latest news from around the world, all in one place.
 
 ## Features
 
-1. Search functionality for finding specific news articles
-2. The ability to filter the results by date, category, and source
-3. The ability to personalize news feed by selecting your preferred source and category
+1. Search Functionality: Easily find specific news articles.
+2. Filtering Options: Filter news articles by date, category, and source.
+3. Personalized News Feed: Customize your feed by selecting preferred sources and categories.
 
 ## Requirements
 
-You will need to get api keys to launch the application:
+To use this application, you will need API keys for the following news sources:
 
-- The Guardian: https://bonobo.capi.gutools.co.uk/register/developer
-- NewsAPI: https://newsapi.org/register
-- The New York Times: https://developer.nytimes.com/get-started Here you will need to enable "Times Wire API" and "Article Search API"
+- **The Guardian** [Register here](https://bonobo.capi.gutools.co.uk/register/developer)
+- **NewsAPI** [Register here](https://newsapi.org/register)
+- **The New York Times** [Register here](https://developer.nytimes.com/get-started)
+  Enable **"Times Wire API"** and **"Article Search API"** in your NY Times developer account.
 
 ## How to run using docker
 
@@ -27,7 +28,7 @@ cd news-aggregator
 
 2. Build the Docker Image
 
-You will need to provide api keys for the following variables: GUARDIAN_KEY, NY_TIMES_KEY, NEWS_API_KEY
+You will need to provide api keys for the following variables: **GUARDIAN_KEY**, **NY_TIMES_KEY**, **NEWS_API_KEY**
 
 ```
 docker build -t news-aggregator:latest --build-arg GUARDIAN_KEY=<GUARDIAN_KEY> --build-arg NY_TIMES_KEY=<NY_TIMES_KEY> --build-arg NEWS_API_KEY=<NEWS_API_KEY> .
@@ -39,7 +40,9 @@ docker build -t news-aggregator:latest --build-arg GUARDIAN_KEY=<GUARDIAN_KEY> -
 docker run -p 5678:80 news-aggregator:latest
 ```
 
-4. Open http://localhost:5678
+4. Access the application
+
+Open your web browser and go to http://localhost:5678
 
 ## How to run using Node.js
 
@@ -56,7 +59,9 @@ cd news-aggregator
 npm install
 ```
 
-3. Create .env file and set variables
+3. Configure environment variables
+
+Create .env file in the root directory and add your API keys
 
 ```
 VITE_GUARDIAN_KEY=<GUARDIAN_KEY>
@@ -69,3 +74,7 @@ VITE_NEWS_API_KEY=<NEWS_API_KEY>
 ```
 npm run dev
 ```
+
+5. Access the application
+
+Open your web browser and go to the address provided in the console output
